@@ -1,0 +1,43 @@
+<div class="dashboard-container">
+  <h3>Infrastructure Dashboard</h3>
+  
+  <div *ngIf="isBrowser; else serverMessage">
+    <!-- Chart pairs for each LOB -->
+    <div *ngFor="let lob of lobCategories" class="lob-section">
+      <h2 class="lob-title">{{ lob }} Line of Business</h2>
+      
+      <div class="charts-row">
+        <div class="chart-section">
+          <h4>{{ lob }} - Infrastructure Types Distribution</h4>
+          <div class="chart-wrapper">
+            <canvas baseChart
+                    [data]="lobChartData[lob].pieChartData"
+                    [type]="chartType.pie"
+                    [options]="lobChartData[lob].pieChartOptions">
+            </canvas>
+          </div>
+        </div>
+        
+        <div class="chart-section">
+          <h4>{{ lob }} - Items Created Per Month</h4>
+          <div class="chart-wrapper">
+            <canvas baseChart
+                    [data]="lobChartData[lob].barChartData"
+                    [type]="chartType.bar"
+                    [options]="lobChartData[lob].barChartOptions">
+            </canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <ng-template #serverMessage>
+    <p>Charts will load when running in browser...</p>
+  </ng-template>
+  
+  <div class="data-section">
+    <h4>Raw Data:</h4>
+    <pre>{{ testData | json }}</pre>
+  </div>
+</div>
