@@ -45,6 +45,8 @@
   padding: 20px;
   flex: 1;
   min-width: 400px;
+  display: flex;
+  flex-direction: column;
 }
 
 .chart-section h4 {
@@ -61,6 +63,46 @@
   max-width: 400px;
   max-height: 400px;
   margin: 0 auto;
+  flex: 1;
+}
+
+.stats-box {
+  background: transparent;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 80px;
+}
+
+.total-count {
+  font-size: 14px;
+  font-weight: bold;
+  color: #000000;
+}
+
+.fcvm-percentage {
+  font-weight: bold;
+  color: #000000;
+  font-size: 14px;
+}
+
+.fcvm-count-box {
+  background: transparent;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 15px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+  color: #000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .data-section {

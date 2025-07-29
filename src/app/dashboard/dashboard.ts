@@ -18,6 +18,9 @@ export class Dashboard implements OnInit {
   isBrowser = false;
   lobCategories: string[] = [];
   lobChartData: { [lob: string]: any } = {};
+  lobFcvmPercentages: { [lob: string]: number } = {};
+  lobTotalCounts: { [lob: string]: number } = {};
+  lobFcvmCounts: { [lob: string]: number } = {};
   
   // Chart configuration templates
   public chartType = {
@@ -33,6 +36,7 @@ export class Dashboard implements OnInit {
     if (this.isBrowser) {
       this.initializeLobCategories();
       this.updateChartsForAllLobs();
+      this.calculateFcvmPercentages();
     }
   }
 
@@ -154,5 +158,17 @@ export class Dashboard implements OnInit {
     // Update chart data
     this.lobChartData[lob].barChartData.labels = sortedMonths;
     this.lobChartData[lob].barChartData.datasets[0].data = sortedMonths.map(month => monthlyCounts[month]);
+  }
+
+  private calculateFcvmPercentages(): void {
+    this.lobCategories.forEach(lob => {
+      const lobData = this.testData.filter(item => item.lob === lob);
+      const totalItems = lobData.length;
+      const fcvmItems = lobData.filter(item => item.infra_type === 'FCVM').length;
+      
+      this.lobTotalCounts[lob] = totalItems;
+      this.lobFcvmCounts[lob] = fcvmItems;
+      this.lobFcvmPercentages[lob] = totalItems > 0 ? Math.round((fcvmItems / totalItems) * 100) : 0;
+    });
   }
 }

@@ -16,6 +16,10 @@
                     [options]="lobChartData[lob].pieChartOptions">
             </canvas>
           </div>
+          <div class="stats-box">
+            <div class="total-count">Total Servers: {{ lobTotalCounts[lob] }}</div>
+            <div class="fcvm-percentage">Migration Percentage: {{ lobFcvmPercentages[lob] }}%</div>
+          </div>
         </div>
         
         <div class="chart-section">
@@ -27,6 +31,7 @@
                     [options]="lobChartData[lob].barChartOptions">
             </canvas>
           </div>
+          <div class="fcvm-count-box">Total FCVMs: {{ lobFcvmCounts[lob] }}</div>
         </div>
       </div>
     </div>
