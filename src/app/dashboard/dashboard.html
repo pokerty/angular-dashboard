@@ -2,6 +2,40 @@
   <h3>Infrastructure Dashboard</h3>
   
   <div *ngIf="isBrowser; else serverMessage">
+    <!-- Overall Summary Section -->
+    <div class="lob-section">
+      <h2 class="lob-title">Overall Summary - All Lines of Business</h2>
+      
+      <div class="charts-row">
+        <div class="chart-section">
+          <h4>Overall - Infrastructure Types Distribution</h4>
+          <div class="chart-wrapper">
+            <canvas baseChart
+                    [data]="overallChartData.pieChartData"
+                    [type]="chartType.pie"
+                    [options]="overallChartData.pieChartOptions">
+            </canvas>
+          </div>
+          <div class="stats-box">
+            <div class="total-count">Total Servers: {{ overallTotalCount }}</div>
+            <div class="fcvm-percentage">Migration Percentage: {{ overallFcvmPercentage }}%</div>
+          </div>
+        </div>
+        
+        <div class="chart-section">
+          <h4>Overall - Items Created Per Month</h4>
+          <div class="chart-wrapper">
+            <canvas baseChart
+                    [data]="overallChartData.barChartData"
+                    [type]="chartType.bar"
+                    [options]="overallChartData.barChartOptions">
+            </canvas>
+          </div>
+          <div class="fcvm-count-box">Total FCVMs: {{ overallFcvmCount }}</div>
+        </div>
+      </div>
+    </div>
+
     <!-- Chart pairs for each LOB -->
     <div *ngFor="let lob of lobCategories" class="lob-section">
       <h2 class="lob-title">{{ lob }} Line of Business</h2>

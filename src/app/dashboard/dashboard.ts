@@ -22,6 +22,12 @@ export class Dashboard implements OnInit {
   lobTotalCounts: { [lob: string]: number } = {};
   lobFcvmCounts: { [lob: string]: number } = {};
   
+  // Overall summary data
+  overallChartData: any = {};
+  overallTotalCount: number = 0;
+  overallFcvmCount: number = 0;
+  overallFcvmPercentage: number = 0;
+  
   // Chart configuration templates
   public chartType = {
     pie: 'pie' as const,
@@ -37,6 +43,9 @@ export class Dashboard implements OnInit {
       this.initializeLobCategories();
       this.updateChartsForAllLobs();
       this.calculateFcvmPercentages();
+      this.initializeOverallCharts();
+      this.updateOverallCharts();
+      this.calculateOverallTotals();
     }
   }
 
@@ -170,5 +179,109 @@ export class Dashboard implements OnInit {
       this.lobFcvmCounts[lob] = fcvmItems;
       this.lobFcvmPercentages[lob] = totalItems > 0 ? Math.round((fcvmItems / totalItems) * 100) : 0;
     });
+  }
+
+  private initializeOverallCharts(): void {
+    this.overallChartData = {
+      pieChartData: {
+        labels: [],
+        datasets: [{
+          data: [],
+          backgroundColor: [
+            '#FF6384',
+            '#36A2EB', 
+            '#FFCE56',
+            '#4BC0C0',
+            '#9966FF',
+            '#FF9F40'
+          ]
+        }]
+      },
+      pieChartOptions: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Overall - Infrastructure Types Distribution'
+          }
+        }
+      },
+      barChartData: {
+        labels: [],
+        datasets: [{
+          label: 'Items Created',
+          data: [],
+          backgroundColor: '#36A2EB',
+          borderColor: '#1f77b4',
+          borderWidth: 1
+        }]
+      },
+      barChartOptions: {
+        responsive: true,
+        plugins: {
+          legend: {
+            position: 'top',
+          },
+          title: {
+            display: true,
+            text: 'Overall - Items Created Per Month'
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 1
+            }
+          }
+        }
+      }
+    };
+  }
+
+  private updateOverallCharts(): void {
+    // Count occurrences of each infra_type across all data
+    const infraTypeCounts: { [key: string]: number } = {};
+    
+    this.testData.forEach(item => {
+      const infraType = item.infra_type || 'Unknown';
+      infraTypeCounts[infraType] = (infraTypeCounts[infraType] || 0) + 1;
+    });
+
+    // Update pie chart data
+    this.overallChartData.pieChartData.labels = Object.keys(infraTypeCounts);
+    this.overallChartData.pieChartData.datasets[0].data = Object.values(infraTypeCounts);
+
+    // Count occurrences per month across all data
+    const monthlyCounts: { [key: string]: number } = {};
+    
+    this.testData.forEach(item => {
+      if (item.createdtime) {
+        const date = new Date(item.createdtime);
+        const monthYear = date.toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'short' 
+        });
+        monthlyCounts[monthYear] = (monthlyCounts[monthYear] || 0) + 1;
+      }
+    });
+
+    // Sort months chronologically
+    const sortedMonths = Object.keys(monthlyCounts).sort((a, b) => {
+      return new Date(a).getTime() - new Date(b).getTime();
+    });
+
+    // Update bar chart data
+    this.overallChartData.barChartData.labels = sortedMonths;
+    this.overallChartData.barChartData.datasets[0].data = sortedMonths.map(month => monthlyCounts[month]);
+  }
+
+  private calculateOverallTotals(): void {
+    this.overallTotalCount = this.testData.length;
+    this.overallFcvmCount = this.testData.filter(item => item.infra_type === 'FCVM').length;
+    this.overallFcvmPercentage = this.overallTotalCount > 0 ? Math.round((this.overallFcvmCount / this.overallTotalCount) * 100) : 0;
   }
 }
